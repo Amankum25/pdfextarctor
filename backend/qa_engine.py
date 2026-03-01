@@ -74,7 +74,7 @@ class QAEngine:
         """
         return {
             'index_available': self.retriever.is_index_available(),
-            'api_key_configured': bool(Config.GOOGLE_API_KEY),
+            'api_key_configured': bool(Config.GROQ_API_KEY),
             'config_valid': Config.validate_config(),
             'index_stats': self.retriever.get_index_statistics(),
             'ready': self.is_ready()

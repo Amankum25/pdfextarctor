@@ -21,8 +21,8 @@ class Config:
     CHUNK_OVERLAP: int = 200
     
     # Embedding Configuration
-    EMBEDDING_MODEL_NAME: str = "models/text-embedding-004"  # Google embedding model
-    EMBEDDING_DIMENSION: int = 768  # Google text-embedding-004 dimension
+    EMBEDDING_MODEL_NAME: str = "sentence-transformers/all-MiniLM-L6-v2"  # Open Source HF model
+    EMBEDDING_DIMENSION: int = 384  # Dimension for all-MiniLM-L6-v2
     
     # LLM Configuration (Switched to Groq)
     LLM_MODEL_NAME: str = "llama-3.3-70b-versatile"  # Groq Llama 3 model
@@ -93,9 +93,6 @@ Answer:
         Returns:
             bool: True if configuration is valid, False otherwise
         """
-        if not cls.GOOGLE_API_KEY:
-            return False
-            
         if not cls.GROQ_API_KEY:
              return False
         

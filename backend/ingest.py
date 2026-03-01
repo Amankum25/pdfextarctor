@@ -13,7 +13,7 @@ import faiss
 import numpy as np
 from langchain_community.document_loaders import PyPDFLoader, TextLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_google_genai import GoogleGenerativeAIEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_core.documents import Document
 
 from config import Config
@@ -29,9 +29,8 @@ class DocumentIngester:
     
     def __init__(self):
         """Initialize the document ingester with embeddings and text splitter."""
-        self.embeddings = GoogleGenerativeAIEmbeddings(
-            google_api_key=Config.GOOGLE_API_KEY,
-            model=Config.EMBEDDING_MODEL_NAME
+        self.embeddings = HuggingFaceEmbeddings(
+            model_name=Config.EMBEDDING_MODEL_NAME
         )
         
         self.text_splitter = RecursiveCharacterTextSplitter(

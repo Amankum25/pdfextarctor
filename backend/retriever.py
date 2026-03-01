@@ -8,7 +8,7 @@ from typing import List, Dict, Any, Tuple, Optional
 
 import faiss
 import numpy as np
-from langchain_google_genai import GoogleGenerativeAIEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings
 
 from config import Config
 from ingest import DocumentIngester
@@ -24,9 +24,8 @@ class DocumentRetriever:
     
     def __init__(self):
         """Initialize the retriever with embeddings model."""
-        self.embeddings = GoogleGenerativeAIEmbeddings(
-            google_api_key=Config.GOOGLE_API_KEY,
-            model=Config.EMBEDDING_MODEL_NAME
+        self.embeddings = HuggingFaceEmbeddings(
+            model_name=Config.EMBEDDING_MODEL_NAME
         )
         self.ingester = DocumentIngester()
         self.index = None
