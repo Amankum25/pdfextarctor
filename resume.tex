@@ -1,0 +1,108 @@
+\documentclass[10pt, letterpaper]{article}
+
+% Packages:
+\usepackage[
+    ignoreheadfoot, 
+    top=0.6 cm, 
+    bottom=0.6 cm, 
+    left=1 cm, 
+    right=1 cm, 
+    footskip=1.0 cm, 
+    showframe=false
+]{geometry} 
+
+\usepackage{titlesec}
+\usepackage{tabto}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{mdwlist}
+\usepackage{ragged2e}
+
+\pagestyle{empty}
+
+% Formatting
+\titleformat{\section}{\large\bfseries\uppercase}{}{0em}{}[\titlerule]
+\titlespacing{\section}{0pt}{5pt}{5pt}
+
+\newcommand{\headerrow}[2]
+{\begin{tabular*}{\linewidth}{l@{\extracolsep{\fill}}r}
+	#1 &
+	#2 \\
+\end{tabular*}}
+
+\newcommand{\entry}[4]{%
+\noindent\textbf{#1} \hfill #2 \\
+\noindent\textit{#3} \hfill \textbf{#4} \vspace{2pt}
+}
+
+% Simple entry for projects with just title and date
+\newcommand{\projectentry}[2]{%
+\noindent\textbf{#1} \hfill #2 \vspace{1pt}
+}
+
+\begin{document}
+
+% Header
+\begin{center}
+    {\huge \textbf{Aman Kumar}} \\ [3pt]
+    amankum25725@gmail.com \ | \ +91-9507272099 \ | \ linkedin.com/in/aman-kumar-44907237b \ | \ github.com/Amankum25
+\end{center}
+
+% Summary
+\section{Professional Summary}
+Computer Science student at IIIT Nagpur (CGPA: 7.6) specializing in \textbf{Full Stack Development} and \textbf{AI Engineering}. Experienced in structuring scalable \textbf{RAG pipelines} and \textbf{real-time applications} using \textbf{Python, React, and LangChain}. Proven track record of designing efficient backend solutions and deploying modern, high-performance web applications. Skilled in optimizing system resources and building secure, user-centric platforms.
+
+% Education
+\section{Education}
+\noindent \textbf{Indian Institute of Information Technology, Nagpur} \hfill 2023 -- Present \\
+\textit{B.Tech in Computer Science \& Engineering} \hfill \textbf{CGPA: 7.6}
+\vspace{4pt}
+
+\noindent \textbf{St. Paul Secondary School} \hfill 2022 \\
+\textit{Senior Secondary Examination (Class XII)} \hfill \textbf{91.8\%}
+\vspace{4pt}
+
+\noindent \textbf{St. Paul Secondary School} \hfill 2020 \\
+\textit{Secondary Examination (Class X)} \hfill \textbf{89.8\%}
+
+% Projects
+\section{Projects}
+
+\noindent \textbf{PolicyLens – AI-Powered Insurance Analyzer} \hfill 2025 \\
+\textit{Tech Stack: React, Python, LangChain, FAISS} 
+\begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt,leftmargin=15pt]
+    \item Engineered a scalable \textbf{RAG pipeline} to analyze complex insurance policies using \textbf{FAISS vector indexing}, slashing manual document review time by \textbf{65\%}.
+    \item Implemented \textbf{Hybrid Search algorithms} combining semantic embeddings with keyword matching, achieving \textbf{99\% retrieval accuracy} and eliminating hallucinations.
+    \item Developed a custom \textbf{"Expert Auditor" engine} that automatically flags hidden clauses and financial limits, improving risk detection efficiency by \textbf{40\%}.
+    \item Built a \textbf{real-time streaming architecture} using \textbf{FastAPI}, reducing AI response latency by \textbf{50\%} (sub-2s responses) for a seamless user experience.
+\end{itemize}
+\vspace{5pt}
+
+\noindent \textbf{Rentigoo -- Rental Marketplace Platform} \hfill 2025 \\
+\textit{Tech Stack: React, Node.js, Tailwind CSS}
+\begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt,leftmargin=15pt]
+    \item Developed a \textbf{full-stack peer-to-peer rental marketplace} with \textbf{real-time booking}, increasing successful transaction rates by \textbf{25\%}.
+    \item Designed an optimized UI using \textbf{Tailwind CSS}, improving page load speeds by \textbf{35\%} and boosting user retention metrics.
+    \item Integrated \textbf{secure JWT authentication} and \textbf{Zod validation}, reducing invalid data submissions by \textbf{90\%} and ensuring strict data integrity.
+    \item Built an Admin Dashboard that streamlined user and product management, cutting administrative overhead by \textbf{45\%}.
+\end{itemize}
+\vspace{5pt}
+
+\noindent \textbf{DevHub -- Developer Community Platform} \hfill 2024 \\
+\textit{Tech Stack: React, Node.js, MongoDB, Socket.io}
+\begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt,leftmargin=15pt]
+    \item Architected a social platform featuring \textbf{Socket.io-powered chat}, enabling \textbf{sub-100ms latency} messaging for instant community interaction.
+    \item Implemented a Markdown-based blog system with optimized rendering, increasing technical content engagement by \textbf{40\%}.
+    \item Engineered a robust \textbf{content moderation system} that reduced spam and policy violations by \textbf{50\%} through automated keyword filtering.
+\end{itemize}
+
+% Skills
+\section{Technical Skills}
+\begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt,leftmargin=15pt]
+    \item \textbf{Languages:} C++, Python, JavaScript, Java, SQL
+    \item \textbf{Frameworks \& Libraries:} React.js, Node.js, Express.js, FastAPI, LangChain, Tailwind CSS
+    \item \textbf{Database \& Tools:} MongoDB, chromadb/FAISS (Vector DB), Docker, Git, Socket.IO, Postman
+    \item \textbf{Core Concepts:} Data Structures \& Algorithms, OOPS, DBMS, Operating Systems, Computer Networks
+\end{itemize}
+
+\end{document}
