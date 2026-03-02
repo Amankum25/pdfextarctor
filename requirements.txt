@@ -1,42 +1,31 @@
 # Core Backend Dependencies
-fastapi>=0.100.0
-uvicorn>=0.20.0
-python-multipart
-python-dotenv>=1.0.0
+fastapi==0.109.0
+uvicorn[standard]==0.27.0
+python-multipart==0.0.9
+python-dotenv==1.0.1
+pydantic==2.6.0
 
 # LangChain Core
-langchain>=0.0.350
-langchain-community>=0.0.10
-langchain-core>=0.1.0
+langchain==0.1.7
+langchain-community==0.0.20
+langchain-core==0.1.23
+langchain-text-splitters==0.0.1
 
-# LLM Providers
-langchain-groq>=0.0.6  # Groq for fast inference
+# LLM Provider
+langchain-groq==0.0.6
 
-# Embedding Providers
-# Local embeddings (recommended - no API key needed)
-sentence-transformers>=2.2.0
-torch>=2.0.0  # Required by sentence-transformers
-
-# Google Gemini embeddings (optional - needs API key)
-google-genai>=0.5.0
-langchain-google-genai>=2.0.0
+# Embeddings (Local - FREE, no API needed)
+sentence-transformers==2.3.1
+torch==2.2.0
+torchvision==0.17.0
+torchaudio==2.2.0
 
 # Vector Store
-faiss-cpu>=1.7.4  # Use faiss-gpu if you have CUDA
-numpy>=1.24.0
+faiss-cpu==1.7.4
+numpy==1.26.3
 
-# Document Processing
-pypdf>=3.0.0
-pymupdf>=1.23.0  # Better PDF text extraction
-pdfplumber>=0.9.0  # Advanced PDF processing
+# PDF Processing
+pypdf==4.0.1
 
-# Data Processing
-pandas>=2.0.0
-
-# Optional: Redis for caching
-redis>=4.5.0
-
-# Development Dependencies (optional)
-pytest>=7.0.0
-black>=23.0.0
-flake8>=6.0.0
+# Redis (optional - for caching responses)
+redis==5.0.1
