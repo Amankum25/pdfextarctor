@@ -1,26 +1,30 @@
 # Core Backend Dependencies
-fastapi==0.109.0
-uvicorn[standard]==0.27.0
-python-multipart==0.0.9
-python-dotenv==1.0.1
-pydantic==2.6.0
+fastapi>=0.100.0
+uvicorn>=0.20.0
+python-multipart
+python-dotenv>=1.0.0
 
-# LangChain Core (compatible versions)
-langchain==0.1.7
-langchain-community==0.0.20
-langchain-core==0.1.23
-langchain-text-splitters==0.0.1
+# LangChain Core
+langchain>=0.0.350
+langchain-community>=0.0.10
+langchain-core>=0.1.0
 
-# LLM Provider (fixed version)
-langchain-groq==0.1.9
+# LLM Providers
+langchain-groq>=0.0.1
 
-# Embeddings (Local - FREE, no API needed)
-sentence-transformers==2.3.1
-torch==2.2.0
+# Embedding Providers
+sentence-transformers>=2.2.0
+torch>=2.0.0
 
 # Vector Store
-faiss-cpu==1.7.4
-numpy==1.26.3
+faiss-cpu>=1.7.4
+numpy>=1.24.0
 
-# PDF Processing
-pypdf==4.0.1
+# Document Processing
+pypdf>=3.0.0
+
+# Data Processing
+pandas>=2.0.0
+
+# Optional: Redis for caching
+redis>=4.5.0
