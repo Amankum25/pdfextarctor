@@ -57,7 +57,10 @@ function App() {
     setLoadingSuggestions(true);
     try {
       const data = await getSuggestedQuestions();
-      setSuggestedQuestions(data.questions || []);
+      const fetchedQs = data.questions || [];
+      // Always prepend the summary option if not present
+      const completeQs = ['Give me a summary of this document', ...fetchedQs.filter(q => !q.toLowerCase().includes('summary'))];
+      setSuggestedQuestions(completeQs);
     } catch (error) {
       console.error("Failed to fetch suggestions", error);
     } finally {
@@ -134,7 +137,7 @@ function App() {
   };
 
   return (
-    <div className="flex h-screen bg-slate-50 text-slate-800 font-sans relative overflow-hidden">
+    <div className="flex h-screen bg-slate-50 mesh-bg text-slate-800 font-sans relative overflow-hidden">
       {/* Background Decor */}
       <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 z-50"></div>
 
@@ -148,8 +151,8 @@ function App() {
       )}
 
       {/* Sidebar */}
-      <div className="w-80 bg-white/80 backdrop-blur-xl border-r border-slate-200/60 flex flex-col p-6 hidden md:flex overflow-y-auto shadow-[4px_0_24px_-4px_rgba(0,0,0,0.05)] relative z-10">
-        <h1 className="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-blue-700 to-indigo-600 mb-8 flex items-center gap-3 tracking-tight">
+      <div className="w-80 glass-panel border-r flex flex-col p-6 hidden md:flex overflow-y-auto relative z-10 transition-all duration-300">
+        <h1 className="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-indigo-700 to-purple-600 mb-8 flex items-center gap-3 tracking-tight drop-shadow-sm">
           <span className="bg-blue-100 p-2 rounded-xl border border-blue-200">
             <Files className="w-6 h-6 text-blue-600" />
           </span>
@@ -167,8 +170,8 @@ function App() {
             <div className="flex flex-col items-center justify-center pt-5 pb-6">
               {isUploading ? (
                 <div className="relative">
-                  <div className="absolute inset-0 bg-blue-400 blur-lg opacity-20 animate-pulse"></div>
-                  <Loader2 className="w-10 h-10 text-blue-600 animate-spin mb-2 relative z-10" />
+                  <div className="absolute inset-0 bg-blue-300 blur-xl opacity-30 animate-pulse rounded-full"></div>
+                  <Loader2 className="w-10 h-10 text-indigo-500 animate-spin mb-2 relative z-10 drop-shadow-md" />
                 </div>
               ) : (
                 <div className="bg-white p-3 rounded-full shadow-sm mb-3 group-hover:scale-110 transition-transform duration-300">
@@ -246,10 +249,10 @@ function App() {
       </div>
 
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col max-w-5xl mx-auto w-full h-full bg-slate-50 relative">
-        <header className="p-4 border-b border-slate-200/50 md:hidden flex items-center justify-between bg-white/50 backdrop-blur-sm sticky top-0 z-40">
+      <div className="flex-1 flex flex-col max-w-5xl mx-auto w-full h-full relative z-0">
+        <header className="p-4 border-b border-white/50 md:hidden flex items-center justify-between glass-panel sticky top-0 z-40">
           <div className="flex items-center gap-2">
-            <Files className="w-6 h-6 text-blue-600" />
+            <Files className="w-6 h-6 text-indigo-600" />
             <h1 className="text-lg font-bold text-slate-800">Policy Analyzer</h1>
           </div>
           <div className={clsx("w-2 h-2 rounded-full", systemReady ? "bg-emerald-500" : "bg-amber-500")} />
@@ -276,10 +279,10 @@ function App() {
                 msg.role === 'user' ? "items-end" : "items-start"
               )}>
                 <div className={clsx(
-                  "p-5 rounded-2xl shadow-sm text-sm md:text-base leading-relaxed",
+                  "p-5 rounded-3xl text-sm md:text-base leading-relaxed transition-all duration-300",
                   msg.role === 'user'
-                    ? "bg-gradient-to-br from-blue-600 to-indigo-700 text-white rounded-br-sm shadow-blue-500/20"
-                    : "bg-white text-slate-800 rounded-bl-sm border border-slate-100 shadow-[0_2px_12px_-2px_rgba(0,0,0,0.05)]"
+                    ? "bg-gradient-to-br from-indigo-500 hover:from-indigo-600 to-purple-600 hover:to-purple-700 text-white rounded-br-sm shadow-lg shadow-indigo-500/20 ml-8"
+                    : "glass-bubble text-slate-800 rounded-bl-sm mr-8"
                 )}>
                   <div className="prose prose-sm max-w-none prose-slate prose-p:my-1 prose-headings:my-2 prose-ul:my-2 prose-li:my-0.5">
                     {typeof msg.content === 'string' ? (
@@ -302,31 +305,6 @@ function App() {
                     )}
                   </div>
                 </div>
-
-                {msg.sources && msg.sources.length > 0 && (
-                  <div className="text-xs text-slate-500 bg-white/70 backdrop-blur-sm p-3 rounded-xl border border-slate-200/60 w-full animate-in fade-in zoom-in duration-300 shadow-sm ml-1">
-                    <div className="flex items-center gap-2 mb-2 pb-1 border-b border-slate-100">
-                      <FileText className="w-3 h-3 text-blue-500" />
-                      <span className="font-semibold text-slate-700 uppercase tracking-wider text-[10px]">Citations from Policy</span>
-                    </div>
-                    <ul className="space-y-1.5 pl-1">
-                      {msg.sources.map((src, i) => (
-                        <li key={i} className="flex items-start gap-1.5 opacity-80 hover:opacity-100 transition-opacity">
-                          <span className="w-1 h-1 bg-blue-400 rounded-full mt-1.5 flex-shrink-0"></span>
-                          <span className="truncate max-w-[300px] leading-tight">{src}</span>
-                        </li>
-                      ))}
-                    </ul>
-                    {msg.confidence && (
-                      <div className="mt-2 pt-1.5 border-t border-slate-100 flex items-center gap-2">
-                        <div className="flex-1 h-1 bg-slate-100 rounded-full overflow-hidden">
-                          <div className="h-full bg-emerald-500 rounded-full" style={{ width: `${msg.confidence * 100}%` }}></div>
-                        </div>
-                        <span className="font-mono text-[10px] text-slate-400">{(msg.confidence * 100).toFixed(0)}% Match</span>
-                      </div>
-                    )}
-                  </div>
-                )}
               </div>
             </div>
           ))}
@@ -349,7 +327,7 @@ function App() {
         </div>
 
         {/* Input Area */}
-        <div className="p-4 md:p-6 bg-white/80 backdrop-blur-xl border-t border-slate-200/60 sticky bottom-0 z-10 shadow-[0_-4px_20px_-4px_rgba(0,0,0,0.05)]">
+        <div className="p-4 md:p-6 glass-panel border-t border-white/60 sticky bottom-0 z-10 transition-all duration-300">
           <form onSubmit={(e) => handleSend(e)} className="max-w-4xl mx-auto relative flex items-center gap-3">
             <div className="relative flex-1 group">
               <input

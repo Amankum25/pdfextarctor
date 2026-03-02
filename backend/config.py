@@ -20,12 +20,38 @@ class Config:
     CHUNK_SIZE: int = 1000
     CHUNK_OVERLAP: int = 200
     
-    # Embedding Configuration
-    EMBEDDING_MODEL_NAME: str = "sentence-transformers/all-MiniLM-L6-v2"  # Open Source HF model
-    EMBEDDING_DIMENSION: int = 384  # Dimension for all-MiniLM-L6-v2
+    # Embedding Provider Configuration
+    # Options: "local", "google", "openai"
+    EMBEDDING_PROVIDER: str = os.getenv("EMBEDDING_PROVIDER", "local")
     
-    # LLM Configuration (Switched to Groq)
-    LLM_MODEL_NAME: str = "llama-3.3-70b-versatile"  # Groq Llama 3 model
+    # Local Embedding Configuration (sentence-transformers)
+    LOCAL_EMBEDDING_MODEL: str = os.getenv("LOCAL_EMBEDDING_MODEL", "all-MiniLM-L6-v2")
+    LOCAL_EMBEDDING_DIMENSION: int = 384  # for all-MiniLM-L6-v2
+    # Popular alternatives:
+    # - "all-mpnet-base-v2" (768 dim) - better quality, slower
+    # - "all-MiniLM-L6-v2" (384 dim) - faster, good quality
+    # - "paraphrase-multilingual-MiniLM-L12-v2" (384 dim) - multilingual
+    
+    # Google GenAI Embedding Configuration
+    GOOGLE_EMBEDDING_MODEL: str = "models/text-embedding-004"
+    GOOGLE_EMBEDDING_DIMENSION: int = 768
+    
+    # Auto-detect embedding dimension based on provider
+    @classmethod
+    def get_embedding_dimension(cls) -> int:
+        if cls.EMBEDDING_PROVIDER == "local":
+            if "mpnet" in cls.LOCAL_EMBEDDING_MODEL.lower():
+                return 768
+            elif "minilm" in cls.LOCAL_EMBEDDING_MODEL.lower():
+                return 384
+            return cls.LOCAL_EMBEDDING_DIMENSION
+        elif cls.EMBEDDING_PROVIDER == "google":
+            return cls.GOOGLE_EMBEDDING_DIMENSION
+        return 768
+    
+    # LLM Configuration (Groq)
+    LLM_PROVIDER: str = os.getenv("LLM_PROVIDER", "groq")
+    LLM_MODEL_NAME: str = os.getenv("LLM_MODEL_NAME", "llama-3.3-70b-versatile")
     LLM_TEMPERATURE: float = 0.2  
     LLM_MAX_TOKENS: int = 4096 
     
@@ -46,6 +72,7 @@ class Config:
     
     # API Configuration
     GROQ_API_KEY: str = os.getenv("GROQ_API_KEY") or ""
+    GOOGLE_API_KEY: str = os.getenv("GOOGLE_API_KEY") or ""
     
     # Redis Configuration
     REDIS_HOST: str = os.getenv("REDIS_HOST", "localhost")
@@ -58,7 +85,7 @@ class Config:
     
     # Error Messages
     ERROR_MESSAGES: Dict[str, str] = {
-        "no_api_key": "Google API key not found. Please set GOOGLE_API_KEY environment variable.",
+        "no_api_key": "API key not found. Please set GROQ_API_KEY and GOOGLE_API_KEY environment variables.",
         "no_index": "No document index found. Please upload documents first.",
         "no_results": "I couldn't find relevant information in the uploaded documents to answer your question.",
         "file_too_large": f"File size exceeds {MAX_FILE_SIZE_MB}MB limit.",
@@ -85,6 +112,23 @@ Question: {question}
 Answer:
 """
 
+    SUMMARY_PROMPT_TEMPLATE: str = """
+You are an expert Insurance Policy auditor. Provide a comprehensive summary of the provided text.
+
+IMPORTANT INSTRUCTIONS:
+1. Synthesize the provided text into a clear, structured summary.
+2. Focus on the core purpose, major inclusions, exclusions, and financial terms mentioned.
+3. It is completely fine to draw broad conclusions from the provided text, but do not invent numbers or policies not stated in the text.
+4. Keep it organized using bullet points and bold text where appropriate.
+
+Text to summarize:
+{context}
+
+Question/Command: {question}
+
+Summary:
+"""
+
     @classmethod
     def validate_config(cls) -> bool:
         """
@@ -93,8 +137,15 @@ Answer:
         Returns:
             bool: True if configuration is valid, False otherwise
         """
-        if not cls.GROQ_API_KEY:
-             return False
+        # For Groq LLM, we need GROQ_API_KEY
+        if cls.LLM_PROVIDER == "groq" and not cls.GROQ_API_KEY:
+            return False
+        
+        # For Google embeddings, we need GOOGLE_API_KEY
+        if cls.EMBEDDING_PROVIDER == "google" and not cls.GOOGLE_API_KEY:
+            return False
+        
+        # Local embeddings don't need API keys
         
         if cls.CHUNK_SIZE <= 0 or cls.CHUNK_OVERLAP < 0:
             return False

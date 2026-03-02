@@ -1,13 +1,6 @@
 version: '3.8'
 
 services:
-  redis:
-    image: redis:alpine
-    container_name: pdf_qa_redis
-    ports:
-      - "6379:6379"
-    restart: unless-stopped
-
   pdfextractor:
     build:
       context: .
@@ -21,11 +14,10 @@ services:
       # Mount uploads directory if you want to persist uploaded files
       - ./uploads:/app/uploads
     environment:
-      - GROQ_API_KEY=${GROQ_API_KEY}
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
+      # Set your Google API key here or use .env file
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
     env_file:
-      - .env # Optional: Load environment variables from .env file
+      - .env  # Optional: Load environment variables from .env file
     restart: unless-stopped
     stdin_open: true
     tty: true
@@ -44,11 +36,9 @@ services:
       - ./faiss_index:/app/faiss_index
       - ./uploads:/app/uploads
     environment:
-      - GROQ_API_KEY=${GROQ_API_KEY}
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
     env_file:
       - .env
     profiles:
-      - dev # Only start with --profile dev
+      - dev  # Only start with --profile dev
     command: streamlit run app.py --server.port=8501 --server.address=0.0.0.0 --server.runOnSave=true

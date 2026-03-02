@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const API_URL = import.meta.env.VITE_API_URL || '';
 
 export const api = axios.create({
     baseURL: API_URL,
@@ -32,7 +32,7 @@ export const uploadFiles = async (files) => {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
-            timeout: 30000, // 30s upload timeout
+            timeout: 300000, // 5 minutes upload timeout to allow deep processing
         });
         return response.data;
     } catch (error) {
@@ -42,7 +42,7 @@ export const uploadFiles = async (files) => {
 
 export const askQuestion = async (question) => {
     try {
-        const response = await axios.post(`${API_URL}/ask`, { question }, { timeout: 60000 }); // 60s timeout for LLM
+        const response = await axios.post(`/ask`, { question }, { timeout: 60000 }); // 60s timeout for LLM
         return response.data;
     } catch (error) {
         handleApiError(error, "askQuestion");

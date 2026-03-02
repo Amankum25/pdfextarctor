@@ -44,7 +44,7 @@ An advanced RAG (Retrieval-Augmented Generation) system powered by Google Gemini
 
 ### Prerequisites
 - Python 3.8+
-- Google API Key (Gemini AI)
+- Groq API Key
 
 ### Installation
 
@@ -61,7 +61,7 @@ pip install -r requirements.txt
 3. **Set up environment variables**
 Create a `.env` file:
 ```env
-GOOGLE_API_KEY=your_google_api_key_here
+GROQ_API_KEY=your_groq_api_key_here
 ```
 
 4. **Run the application**
