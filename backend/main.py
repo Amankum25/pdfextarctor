@@ -59,13 +59,11 @@ class QuestionResponse(BaseModel):
 
 @app.on_event("startup")
 async def startup_event():
-    """Initialize the QA engine on startup (best-effort)."""
+    """Initialize the QA engine on startup (lazy initialization)."""
     global qa_engine
-    try:
-        qa_engine = QAEngine()
-        logger.info("QA Engine initialized successfully at startup")
-    except Exception as e:
-        logger.warning(f"QA Engine startup init failed (will retry on first request): {e}")
+    logger.info("Server started - QA Engine will initialize on first request")
+    # Don't block port binding - initialize lazily on first request via get_qa_engine()
+    pass
 
 
 @app.get("/health")
