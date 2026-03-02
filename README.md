@@ -452,6 +452,50 @@ docker-compose down
 - [**PROJECT_STATUS.md**](docs/PROJECT_STATUS.md) - Project history
 - [**ENHANCEMENTS.md**](docs/ENHANCEMENTS.md) - Future improvements
 
+## 🚀 Deployment
+
+### Quick Deploy Options
+
+| Platform | Cost | Setup Time | Best For |
+|----------|------|------------|----------|
+| **Render** (Recommended) | FREE | 15 min | Demos, MVPs |
+| **Vercel + Railway** | FREE/$5 | 20 min | Production |
+| **Docker on VPS** | $5-6/mo | 45 min | High traffic |
+
+#### Deploy to Render (Recommended)
+
+```bash
+# 1. Push to GitHub (done!)
+# 2. Go to https://render.com
+# 3. Create Web Service for backend
+#    - Root: backend
+#    - Build: pip install -r ../requirements.txt
+#    - Start: uvicorn main:app --host 0.0.0.0 --port $PORT
+# 4. Create Static Site for frontend
+#    - Root: frontend
+#    - Build: npm install && npm run build
+#    - Publish: dist
+# 5. Add environment variables
+# Done! 🎉
+```
+
+#### Deploy with Docker
+
+```bash
+# Start everything locally
+docker-compose up -d
+
+# Access at:
+# Frontend: http://localhost
+# Backend: http://localhost:8000
+# API Docs: http://localhost:8000/docs
+```
+
+**Full deployment guides:**
+- 📘 [**DEPLOYMENT_GUIDE.md**](docs/DEPLOYMENT_GUIDE.md) - Comprehensive 20+ page guide
+- ⚡ [**DEPLOY_QUICK.md**](docs/DEPLOY_QUICK.md) - Quick commands
+- 🎯 [**PLATFORM_RECOMMENDATIONS.md**](docs/PLATFORM_RECOMMENDATIONS.md) - Platform comparison
+
 ## 🤝 Contributing
 
 Contributions welcome! Areas for improvement:

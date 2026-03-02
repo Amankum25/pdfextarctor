@@ -1,44 +1,83 @@
 version: '3.8'
 
 services:
-  pdfextractor:
+  backend:
     build:
       context: .
-      dockerfile: Dockerfile
-    container_name: pdf_qa_system
+      dockerfile: backend/Dockerfile
+    container_name: policy_analyzer_backend
     ports:
-      - "8501:8501"
+      - "8000:8000"
     volumes:
       # Mount the faiss_index directory to persist the vector database
-      - ./faiss_index:/app/faiss_index
-      # Mount uploads directory if you want to persist uploaded files
-      - ./uploads:/app/uploads
+      - ./backend/faiss_index:/app/faiss_index
     environment:
-      # Set your Google API key here or use .env file
+      # Embedding configuration
+      - EMBEDDING_PROVIDER=${EMBEDDING_PROVIDER:-local}
+      - LOCAL_EMBEDDING_MODEL=${LOCAL_EMBEDDING_MODEL:-all-MiniLM-L6-v2}
       - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      
+      # LLM configuration
+      - LLM_PROVIDER=${LLM_PROVIDER:-groq}
+      - LLM_MODEL_NAME=${LLM_MODEL_NAME:-llama-3.3-70b-versatile}
+      - GROQ_API_KEY=${GROQ_API_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      
+      # Ollama configuration (if using)
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+      
+      # Chunking configuration
+      - CHUNK_SIZE=${CHUNK_SIZE:-1000}
+      - CHUNK_OVERLAP=${CHUNK_OVERLAP:-200}
     env_file:
-      - .env  # Optional: Load environment variables from .env file
+      - .env
     restart: unless-stopped
-    stdin_open: true
-    tty: true
+    healthcheck:
+      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
-  # Optional: Add a development service for live code reloading
-  pdfextractor-dev:
+  frontend:
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+    container_name: policy_analyzer_frontend
+    ports:
+      - "80:80"
+    environment:
+      - VITE_API_URL=http://localhost:8000
+    depends_on:
+      - backend
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Development service for backend only
+  backend-dev:
     build:
       context: .
-      dockerfile: Dockerfile
-    container_name: pdf_qa_system_dev
+      dockerfile: backend/Dockerfile
+    container_name: policy_analyzer_backend_dev
     ports:
-      - "8502:8501"
+      - "8001:8000"
     volumes:
-      # Mount source code for development
-      - .:/app
-      - ./faiss_index:/app/faiss_index
-      - ./uploads:/app/uploads
+      # Mount source code for live reload
+      - ./backend:/app
+      - ./backend/faiss_index:/app/faiss_index
     environment:
+      - EMBEDDING_PROVIDER=${EMBEDDING_PROVIDER:-local}
+      - LOCAL_EMBEDDING_MODEL=${LOCAL_EMBEDDING_MODEL:-all-MiniLM-L6-v2}
       - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - LLM_PROVIDER=${LLM_PROVIDER:-groq}
+      - LLM_MODEL_NAME=${LLM_MODEL_NAME:-llama-3.3-70b-versatile}
+      - GROQ_API_KEY=${GROQ_API_KEY}
     env_file:
       - .env
     profiles:
-      - dev  # Only start with --profile dev
-    command: streamlit run app.py --server.port=8501 --server.address=0.0.0.0 --server.runOnSave=true
+      - dev
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
