@@ -5,14 +5,14 @@ python-multipart==0.0.9
 python-dotenv==1.0.1
 pydantic==2.6.0
 
-# LangChain Core
+# LangChain Core (compatible versions)
 langchain==0.1.7
 langchain-community==0.0.20
 langchain-core==0.1.23
 langchain-text-splitters==0.0.1
 
-# LLM Provider
-langchain-groq==0.0.6
+# LLM Provider (fixed version)
+langchain-groq==0.1.9
 
 # Embeddings (Local - FREE, no API needed)
 sentence-transformers==2.3.1
