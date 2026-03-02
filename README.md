@@ -1,6 +1,12 @@
-# Document Q&A RAG System
+# Policy Analyzer - Document Q&A RAG System
 
 A production-quality, optimized Retrieval-Augmented Generation (RAG) system for querying multiple PDF and text documents with **flexible model selection** and **zero-cost options**.
+
+## 🔗 Live Demo
+
+**Frontend (Vercel)**: [https://policy-analyzer-frontend.vercel.app](https://policy-analyzer-frontend.vercel.app)
+
+**Repository**: [https://github.com/Amankum25/policy-analyzer](https://github.com/Amankum25/policy-analyzer)
 
 ## ✨ Key Features
 
