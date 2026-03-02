@@ -17,8 +17,6 @@ langchain-groq==0.0.6
 # Embeddings (Local - FREE, no API needed)
 sentence-transformers==2.3.1
 torch==2.2.0
-torchvision==0.17.0
-torchaudio==2.2.0
 
 # Vector Store
 faiss-cpu==1.7.4
@@ -26,6 +24,3 @@ numpy==1.26.3
 
 # PDF Processing
 pypdf==4.0.1
-
-# Redis (optional - for caching responses)
-redis==5.0.1
