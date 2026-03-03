@@ -19,7 +19,7 @@ sentence-transformers==3.0.1
 torch==2.10.0+cpu
 
 # Vector Store
-faiss-cpu==1.8.0
+faiss-cpu==1.13.2
 numpy==1.26.4
 
 # Document Processing
