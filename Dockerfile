@@ -1,5 +1,5 @@
-# Use Python 3.9 slim image
-FROM python:3.9-slim
+# Use Python 3.12 slim image to match runtime.txt
+FROM python:3.12-slim
 
 # Set working directory
 WORKDIR /app
@@ -8,7 +8,8 @@ WORKDIR /app
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     VIRTUAL_ENV=/app/venv \
-    PATH="/app/venv/bin:$PATH"
+    PATH="/app/venv/bin:$PATH" \
+    PORT=8000
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -31,13 +32,13 @@ RUN pip install --no-cache-dir --upgrade pip && \
 COPY . .
 
 # Create directory for FAISS index
-RUN mkdir -p /app/faiss_index
+RUN mkdir -p /app/backend/faiss_index
 
-# Expose port for Streamlit
-EXPOSE 8501
+# Expose default port (will be overridden by Render's PORT env var)
+EXPOSE 8000
 
-# Health check
-HEALTHCHECK CMD curl --fail http://localhost:8501/_stcore/health
+# Health check - uses shell to expand PORT variable
+HEALTHCHECK CMD sh -c 'curl --fail http://localhost:${PORT:-8000}/health || exit 1'
 
-# Run the application
-CMD ["streamlit", "run", "app.py", "--server.port=8501", "--server.address=0.0.0.0"]
+# Run the FastAPI application - uses shell to expand PORT variable
+CMD sh -c "cd backend && uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000}"

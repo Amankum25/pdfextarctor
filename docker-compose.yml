@@ -4,14 +4,17 @@ services:
   backend:
     build:
       context: .
-      dockerfile: backend/Dockerfile
+      dockerfile: Dockerfile
     container_name: policy_analyzer_backend
     ports:
-      - "8000:8000"
+      - "${PORT:-8000}:${PORT:-8000}"
     volumes:
       # Mount the faiss_index directory to persist the vector database
       - ./backend/faiss_index:/app/faiss_index
     environment:
+      # Port configuration
+      - PORT=${PORT:-8000}
+      
       # Embedding configuration
       - EMBEDDING_PROVIDER=${EMBEDDING_PROVIDER:-local}
       - LOCAL_EMBEDDING_MODEL=${LOCAL_EMBEDDING_MODEL:-all-MiniLM-L6-v2}
@@ -33,7 +36,7 @@ services:
       - .env
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:8000/health')"]
+      test: ["CMD", "python", "-c", "import requests; import os; requests.get(f'http://localhost:{os.getenv(\"PORT\", \"8000\")}/health')"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -47,7 +50,7 @@ services:
     ports:
       - "80:80"
     environment:
-      - VITE_API_URL=http://localhost:8000
+      - VITE_API_URL=http://localhost:${PORT:-8000}
     depends_on:
       - backend
     restart: unless-stopped
