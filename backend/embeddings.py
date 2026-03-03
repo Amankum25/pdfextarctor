@@ -16,21 +16,26 @@ class EmbeddingProvider:
     """
     Unified embedding interface that abstracts different embedding providers.
     Automatically selects the provider based on Config.EMBEDDING_PROVIDER.
+    Model is loaded LAZILY on first encode call — not at __init__ time.
+    This prevents OOM / timeout crashes on Render during startup.
     """
     
     def __init__(self):
-        """Initialize the embedding provider based on configuration."""
+        """Record provider type only — do NOT load model yet."""
         self.provider = Config.EMBEDDING_PROVIDER.lower()
-        self.model = None
-        
+        self.model = None  # loaded lazily on first use
+        logger.info(f"EmbeddingProvider created (provider={self.provider}). Model will load on first use.")
+
+    def _ensure_model_loaded(self):
+        """Load the model if not already loaded (lazy init)."""
+        if self.model is not None:
+            return
         if self.provider == "local":
             self._init_local_embeddings()
         elif self.provider == "google":
             self._init_google_embeddings()
         else:
             raise ValueError(f"Unsupported embedding provider: {self.provider}")
-        
-        logger.info(f"Initialized {self.provider} embeddings")
     
     def _init_local_embeddings(self):
         """Initialize local sentence-transformers model."""
@@ -81,16 +86,10 @@ class EmbeddingProvider:
     def embed_documents(self, texts: List[str]) -> List[List[float]]:
         """
         Generate embeddings for a list of documents.
-        
-        Args:
-            texts: List of text strings to embed
-            
-        Returns:
-            List of embedding vectors
         """
         if not texts:
             return []
-        
+        self._ensure_model_loaded()
         try:
             if self.provider == "local":
                 # sentence-transformers returns numpy arrays
@@ -113,13 +112,8 @@ class EmbeddingProvider:
     def embed_query(self, text: str) -> List[float]:
         """
         Generate embedding for a single query.
-        
-        Args:
-            text: Query text to embed
-            
-        Returns:
-            Embedding vector
         """
+        self._ensure_model_loaded()
         try:
             if self.provider == "local":
                 # sentence-transformers
@@ -139,6 +133,7 @@ class EmbeddingProvider:
     
     def get_embedding_dimension(self) -> int:
         """Get the dimension of the embedding vectors."""
+        self._ensure_model_loaded()
         if self.provider == "local":
             return self.model.get_sentence_embedding_dimension()
         elif self.provider == "google":
